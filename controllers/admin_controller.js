@@ -2,7 +2,7 @@ const adminModel=require("../models/admin.js");
 const bcrypt=require("bcrypt");
 const z=require("zod");
 const jwt=require("jsonwebtoken");
-const Ground=require("../models/ground.js")
+const Ground=require("../models/ground.js");
 
 
 const adminSchema=z.object({
@@ -23,7 +23,6 @@ const adminGroundSchema=z.object({
     location:z.string(),
     pricePerHour:z.number().positive(),
     description:z.string().optional(),
-    image:z.string().url().optional()
 })
 
 
@@ -73,7 +72,9 @@ const adminGroundSubmit=async (req,res)=>{
         return res.status(404).json({msg:"enter details correctly"});
     }
 
-    const {name,location,pricePerHour,description,image}=GroundAuth.data;
+    const {name,location,pricePerHour,description}=GroundAuth.data;
+
+        const image = req.file ? `/uploads/${req.file.filename}` : "";
 
     const newGround=new Ground({
         name,location,pricePerHour,description,image,createdBy:req.adminId
