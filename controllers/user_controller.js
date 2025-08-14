@@ -160,7 +160,7 @@ const userLogin=async (req,res)=>{
 
     }
 
-    const token=jwt.sign({userId:exist._id,email:exist.email},process.env.JWT_SECRET)
+    const token=jwt.sign({userId:exist._id,email:exist.email},process.env.JWT_SECRET, { expiresIn: '5' });
     console.log(exist._id);
 
     return res.status(200).json({msg:"successfully login",token,userId: exist._id,});
