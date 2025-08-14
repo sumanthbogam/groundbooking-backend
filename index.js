@@ -4,6 +4,9 @@ const mongoose=require("mongoose");
 const dotenv=require("dotenv");
 const adminRouter=require("./routes/adminroute.js");
 const userRouter=require("./routes/userRoute.js");
+const {getAllGrounds}=require("./controllers/admin_controller.js");
+const groundRoute=require("./routes/groundroute.js");
+const {expressrouter}=require("./routes/requestroute.js")
 
 dotenv.config();
 
@@ -29,15 +32,15 @@ mongoose.connect(process.env.mongo)
   console.error(" MongoDB connection error:", err);
 });
 
+
 app.use("/api/admin",adminRouter);
 app.use("/api/user",userRouter);
+app.use("/api/ground",groundRoute);
+app.use("/api/gen",expressrouter);
 
 
 
-app.get("/",(req,res)=>{
-    res.send("response from get");
 
-});
 
 
 app.listen(3000,()=>{

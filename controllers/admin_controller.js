@@ -21,7 +21,7 @@ const adminloginSchema=z.object({
 const adminGroundSchema=z.object({
     name:z.string().min(3),
     location:z.string(),
-    pricePerHour:z.number().positive(),
+    pricePerHour:z.string(),
     description:z.string().optional(),
 })
 
@@ -67,14 +67,17 @@ const adminGroundSubmit=async (req,res)=>{
 
    
    try { const GroundAuth=adminGroundSchema.safeParse(req.body);
+      console.log("BODY:", req.body);
+    console.log("FILE:", req.file);
 
     if(!GroundAuth.success){
         return res.status(404).json({msg:"enter details correctly"});
     }
 
-    const {name,location,pricePerHour,description}=GroundAuth.data;
+    const {name,location,pricePerHour,description}=req.body;
 
-        const image = req.file ? `/uploads/${req.file.filename}` : "";
+        const image =req.file.filename;
+        console.log(image);
 
     const newGround=new Ground({
         name,location,pricePerHour,description,image,createdBy:req.adminId
@@ -96,6 +99,25 @@ const adminGroundSubmit=async (req,res)=>{
 
 
 }
+
+const getAllGrounds=async (req,res)=>{
+    try
+    {
+
+    const grounds=await Ground.find({});
+    console.log("hi")
+    console.log(grounds);
+    return res.status(200).json({grounds});
+    
+}
+catch(err){
+    console.error(err);
+
+ return res.status(200).json({msg:"server error"});
+
+
+}}
+
 const getGrounds=async (req,res)=>{
     try
     {const userId=req.adminId;
@@ -161,4 +183,4 @@ catch(err){
 
 }
 
-module.exports={adminRegister,adminLogin,adminGroundSubmit,getGrounds};
+module.exports={adminRegister,adminLogin,adminGroundSubmit,getGrounds,getAllGrounds};

@@ -11,7 +11,7 @@ const bookingSchema=new mongoose.Schema({
     groundId:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"grounds",
-        requird:true
+        required:true
     },
     date:{
         type:String,
@@ -21,11 +21,7 @@ const bookingSchema=new mongoose.Schema({
         type:String,
         required:true
  },
- players:{
-    type:Number,
-    required:false,
-    default:0
- }
+ 
 
 },{timestamps:true}
 

@@ -3,7 +3,7 @@ const bcrypt=require("bcrypt");
 const jwt=require("jsonwebtoken");
 const z=require("zod");
 const Ground=require("../models/ground.js");
-const {bookingModel}=require("../models/booking.js")
+// const {bookingModel}=require("../models/booking.js")
 
 
 
@@ -42,49 +42,49 @@ const myBookinngs=async (req,res)=>{
 
 
 
-const booking=async (req,res)=>{
+// const booking=async (req,res)=>{
 
-    try{const valid=bookingZodSchema.safeParse(req.body);
-        console.log(valid)
-    if(!valid.success){
-         return res.status(400).json({msg:"error"});
-    }
+//     try{const valid=bookingZodSchema.safeParse(req.body);
+//         console.log(valid)
+//     if(!valid.success){
+//          return res.status(400).json({msg:"error"});
+//     }
 
-    const {groundId,date,timeslot,players=0}=valid.data;
+//     const {groundId,date,timeslot,players=0}=valid.data;
 
-    const trimdate=date.trim();
+//     const trimdate=date.trim();
 
-    const trimtimeslot=timeslot.trim().toLowerCase();
+//     const trimtimeslot=timeslot.trim().toLowerCase();
 
-    const bookingStatus=await bookingModel.findOne({groundId,date:trimdate,timeslot:trimtimeslot});
+//     const bookingStatus=await bookingModel.findOne({groundId,date:trimdate,timeslot:trimtimeslot});
 
-    console.log(bookingStatus);
+//     console.log(bookingStatus);
 
-    if(bookingStatus){
-        return res.status(400).json({msg:"ground already booked at this timeslot"});
+//     if(bookingStatus){
+//         return res.status(400).json({msg:"ground already booked at this timeslot"});
 
-    }
+//     }
 
-    const booking= new bookingModel({
-        user:req.userId,
-        groundId,
-        date,timeslot,players
-
-
-    })
-
-    await booking.save();
-     return res.status(200).json({msg:"booking successfull"});
+//     const booking= new bookingModel({
+//         user:req.userId,
+//         groundId,
+//         date,timeslot,players
 
 
+//     })
 
-}
-    catch(err){
-        console.error(err);
-    }
+//     await booking.save();
+//      return res.status(200).json({msg:"booking successfull"});
 
 
-}
+
+// }
+//     catch(err){
+//         console.error(err);
+//     }
+
+
+// }
 
 const getGrounds=async (req,res)=>{
   try { const grounds=await Ground.find();
@@ -157,15 +157,17 @@ const userLogin=async (req,res)=>{
 
     if(!validPass){
         return res.status(400).json({msg:"password wrong"});
+
     }
 
     const token=jwt.sign({userId:exist._id,email:exist.email},process.env.JWT_SECRET)
+    console.log(exist._id);
 
-    return res.status(200).json({msg:"successfully login",token});
+    return res.status(200).json({msg:"successfully login",token,userId: exist._id,});
 
 
 
 
 }
 
-module.exports={userRegister,userLogin,getGrounds,booking,myBookinngs};
+module.exports={userRegister,userLogin,getGrounds,myBookinngs};
