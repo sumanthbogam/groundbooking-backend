@@ -3,7 +3,7 @@ const bcrypt=require("bcrypt");
 const jwt=require("jsonwebtoken");
 const z=require("zod");
 const Ground=require("../models/ground.js");
-// const {bookingModel}=require("../models/booking.js")
+const {bookingModel}=require("../models/booking.js")
 
 
 
@@ -26,11 +26,15 @@ const bookingZodSchema=z.object({
 })
 
 
-const myBookinngs=async (req,res)=>{
+const myBookings=async (req,res)=>{
 
-   try{ const id=req.userId;
+   try{ 
+    console.log("hwllo");
+    const id=req.params.id;
+    console.log(id);
 
     const bookedGrounds=await bookingModel.find({user:id});
+    console.log(bookedGrounds)
 
     return res.status(200).json({bookedGrounds});}
     catch(err){
@@ -163,11 +167,11 @@ const userLogin=async (req,res)=>{
     const token=jwt.sign({userId:exist._id,email:exist.email},process.env.JWT_SECRET, { expiresIn: '5' });
     console.log(exist._id);
 
-    return res.status(200).json({msg:"successfully login",token,userId: exist._id,});
+    return res.status(200).json({msg:"successfully login",token,userId: exist._id,email:exist.email});
 
 
 
 
 }
 
-module.exports={userRegister,userLogin,getGrounds,myBookinngs};
+module.exports={userRegister,userLogin,getGrounds,myBookings};

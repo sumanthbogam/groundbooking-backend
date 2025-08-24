@@ -1,5 +1,5 @@
 const express=require("express");
-const {userRegister,userLogin,getGrounds,booking,myBookinngs}=require("../controllers/user_controller");
+const {userRegister,userLogin,getGrounds,booking,myBookings}=require("../controllers/user_controller");
 const {getAllGrounds} =require("../controllers/admin_controller");
 const {verifyUserToken}=require("../middlewares/auth.js")
 
@@ -14,11 +14,13 @@ userRouter.get('/grounds',verifyUserToken,getGrounds);
 
 // userRouter.post('/book',verifyUserToken,booking);
 
-userRouter.get("/myBookings",verifyUserToken,myBookinngs);
+userRouter.get("/myBookings/:id",myBookings);
 
 userRouter.get("/getAll",getAllGrounds);
 
 userRouter.get("/getAllafter",getAllGrounds);
+
+
 
 
 

@@ -19,7 +19,7 @@ const groundSchema=new mongoose.Schema({
     image:String,
     createdBy:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:"admin",
+        ref:"Admin",
         required:true
     }
     

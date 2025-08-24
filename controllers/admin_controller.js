@@ -3,6 +3,7 @@ const bcrypt=require("bcrypt");
 const z=require("zod");
 const jwt=require("jsonwebtoken");
 const Ground=require("../models/ground.js");
+const mongoose=require("mongoose");
 
 
 const adminSchema=z.object({
@@ -25,7 +26,61 @@ const adminGroundSchema=z.object({
     description:z.string().optional(),
 })
 
+const editAdd=async(req,res)=>{
+    try{
 
+    const updates = {
+      name: req.body.name,
+      location: req.body.location,
+      pricePerHour: req.body.pricePerHour,
+      description: req.body.description,
+    };
+
+    if (req.file) {
+      updates.image = req.file.filename;
+    }
+
+    const updatedGround = await Ground.findByIdAndUpdate(
+      req.params.id,
+      updates,
+      { new: true }
+    );
+
+
+    if (!updatedGround) return res.status(404).json({ msg: "Ground not found" });
+
+    res.json({ msg: "Ground updated successfully", ground: updatedGround });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: "Server error" });
+  }
+
+
+
+
+
+}
+
+const editGround=async (req,res)=>{
+    try {
+    const ground = await Ground.findById(req.params.id);
+    if (!ground) return res.status(404).json({ msg: "Ground not found" });
+    res.json(ground);
+  } catch (err) {
+    res.status(500).json({ msg: "Server error" });
+  }
+
+}
+
+const getDelete = async (req, res) => {
+  try {
+    const { id } = req.params;   
+    await Ground.findByIdAndDelete(id);
+    res.json({ success: true, message: "Ground deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
 
 
 const adminRegister=async (req,res)=>{
@@ -105,8 +160,8 @@ const getAllGrounds=async (req,res)=>{
     {
 
     const grounds=await Ground.find({});
-    console.log("hi")
     console.log(grounds);
+    
     return res.status(200).json({grounds});
     
 }
@@ -120,18 +175,25 @@ catch(err){
 
 const getGrounds=async (req,res)=>{
     try
-    {const userId=req.adminId;
+    {const userId=req.headers.adminid;
+        console.log(userId);
 
-    const grounds=await Ground.find({createdBy:userId});
+    //  const grounds=await Ground.find({});
+      const grounds = await Ground.find({ createdBy: userId });
+    console.log("hiii");
+    console.log(grounds);
+    
     return res.status(200).json({grounds});
 }
 catch(err){
     console.error(err);
 
- return res.status(200).json({msg:"server error"});
+ return res.status(400).json({msg:"server error"});
 
 
 }
+
+
 
 
 
@@ -158,7 +220,7 @@ const adminLogin=async (req,res)=>{
     const token=jwt.sign({adminId:details._id,email:details.email},process.env.JWT_SECRET,{expiresIn:"1h"} );
 
     return res.status(200).json({msg:"login successfull",
-        token
+        token,id:details._id,email:details.email
     }
         
     )
@@ -183,4 +245,4 @@ catch(err){
 
 }
 
-module.exports={adminRegister,adminLogin,adminGroundSubmit,getGrounds,getAllGrounds};
+module.exports={adminRegister,adminLogin,adminGroundSubmit,getGrounds,getAllGrounds,getDelete,editGround,editAdd};

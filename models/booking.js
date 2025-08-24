@@ -20,7 +20,11 @@ const bookingSchema=new mongoose.Schema({
     timeslot:{
         type:String,
         required:true
- },
+ },image:{
+    type:String
+ },name:{
+    type:String
+ }
  
 
 },{timestamps:true}
